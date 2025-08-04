@@ -7,18 +7,20 @@ const services = [
     title: "Matchmaking",
     desc: "Tailored introductions to compatible singles",
     image: "/jpeg/matchmaking.jpeg",
+    link: "",
   },
   {
     title: "Coaching",
     desc: "Dating and relationship coaching by experts",
     image: "/jpeg/coaching.jpeg",
+    link: "",
   },
   {
     title: "Events",
     desc: "Private matchmaking mixers and social events",
     image: "/jpeg/events.jpeg",
+    link: "",
   },
- 
 ];
 
 const ServicesOverview = () => {
@@ -46,7 +48,9 @@ const ServicesOverview = () => {
           const CardContent = (
             <div
               className={`bg-white rounded-lg shadow-md overflow-hidden transform transition duration-500 ease-in-out ${
-                visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"
+                visible
+                  ? "opacity-100 translate-y-0"
+                  : "opacity-0 translate-y-10"
               } hover:scale-105 hover:shadow-xl`}
               style={{ transitionDelay: `${i * 100}ms` }}
             >
@@ -61,7 +65,11 @@ const ServicesOverview = () => {
             </div>
           );
           return s.link ? (
-            <a href={s.link} key={i} className="block focus:outline-none focus:ring-2 focus:ring-teal-500">
+            <a
+              href={s.link}
+              key={i}
+              className="block focus:outline-none focus:ring-2 focus:ring-teal-500"
+            >
               {CardContent}
             </a>
           ) : (

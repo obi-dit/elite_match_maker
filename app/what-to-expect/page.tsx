@@ -100,8 +100,8 @@ export default function WhatToExpectPage() {
               <FaCrown style={{ color: gold }} /> Show Concept
             </h2>
             <p className="text-xl text-gray-700 max-w-3xl mx-auto">
-              This is not a dating show—it&apos;s a wife selection challenge.
-              All contestants understand this is a once-in-a-lifetime chance to
+              This is not a dating show—it is a wife selection challenge. All
+              contestants understand this is a once-in-a-lifetime chance to
               marry into a life of stability, love, and elite status in the U.S.
             </p>
           </div>
@@ -446,21 +446,21 @@ export default function WhatToExpectPage() {
           </h2>
           <div className="space-y-6 text-lg">
             <p className="italic">
-              "In the heart of Colombia, twenty beautiful women arrive with one
+              `In the heart of Colombia, twenty beautiful women arrive with one
               mission… to win the love of a man most women will never meet — an
-              Elite, high-value American bachelor."
+              Elite, high-value American bachelor.`
             </p>
             <p className="italic">
-              "He's not here for games. He's not here for flings. He's here to
-              find a wife."
+              `He is not here for games. He is not here for flings. He is here
+              to find a wife.`
             </p>
             <p className="italic">
-              "For 8 days, they'll compete to prove they're wife material. The
-              winners stay. The rest go home."
+              `For 8 days, they will compete to prove they are wife material.
+              The winners stay. The rest go home.`
             </p>
             <p className="italic font-bold">
-              "This is Passport Bachelor. Exclusive. Private. Real. And only one
-              woman… will become his queen."
+              `This is Passport Bachelor. Exclusive. Private. Real. And only one
+              woman… will become his queen.`
             </p>
           </div>
         </div>
