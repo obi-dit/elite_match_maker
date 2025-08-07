@@ -5,6 +5,7 @@ const Navbar = () => (
     <Image
       src="/logo/logo.jpg"
       width={120}
+      height={40}
       alt="Logo"
       className="rounded-full"
     />

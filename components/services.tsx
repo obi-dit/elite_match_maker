@@ -6,7 +6,7 @@ const services = [
   {
     title: "Matchmaking",
     desc: "Tailored introductions to compatible singles",
-    image: "/jpeg/matchmaking.jpeg",
+    image: "/jpeg/matchmaking1.jpg",
     link: "",
   },
   {

@@ -2,7 +2,7 @@ import Link from "next/link";
 const Hero = () => (
   <section
     className="relative h-screen bg-cover bg-center"
-    style={{ backgroundImage: "url(/webp/black-couple.webp)" }}
+    style={{ backgroundImage: "url(/jpeg/hero.jpg)" }}
   >
     <div className="bg-black/50 absolute inset-0 flex items-center justify-center">
       <div className="text-center text-white px-6">
