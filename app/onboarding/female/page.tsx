@@ -2,45 +2,97 @@
 
 import { useState } from "react";
 import { motion } from "framer-motion";
+import { toast } from "react-toastify";
+import FileUpload from "../../../components/FileUpload";
+
+// API endpoint configuration
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:6000";
+
+// Type definitions for API integration
+interface CreateUserRequest {
+  fullName?: string;
+  age: number;
+  email?: string;
+  whatsappNumber?: string;
+  gender?: "FEMALE";
+  cityOfResidence?: string;
+  cityOther?: string;
+  englishProficiency?: string;
+  heightCm: number;
+  weightKg: number;
+  isSingleAndAvailable?: boolean;
+  comfortableFilming?: boolean;
+  traditionalWantsMarriage?: boolean;
+  willingToCompete?: boolean;
+  children?: string;
+  willingLieDetector?: boolean;
+  consentForMedia?: boolean;
+  personalityThreeWords?: string;
+  relationshipGoals?: string;
+  attractionToOlderMen?: string;
+  whyGoodWife?: string;
+  talentsOrHobbies?: string;
+  comfortableBikiniChallenges: boolean;
+  photo1?: string;
+  photo2?: string;
+  photo3?: string;
+  introVideo?: string;
+  socialMediaLinks?: string;
+  understandsPrivateShow: boolean;
+  understandsNoCompensation: boolean;
+  confirmsTruthful: boolean;
+}
+
+// Initial form state
+const initialFormState = {
+  // Section 1: Basic Information
+  fullName: "",
+  age: "",
+  emailAddress: "",
+  whatsappNumber: "",
+  cityOfResidence: "",
+  otherCity: "",
+  englishSpeaking: "",
+
+  // Section 2: Physical & Lifestyle Info
+  height: "",
+  weight: "",
+  singleAndAvailable: "",
+  comfortableBeingFilmed: "",
+  traditionalWoman: "",
+  willingToCompete: "",
+  hasChildren: "",
+  willingLieDetector: "",
+  agreeConsentForm: "",
+
+  // Section 3: Personality & Intentions
+  personalityThreeWords: "",
+  relationshipGoals: "",
+  attractedToManOver50: "",
+  goodWifeForBachelor: "",
+  talentsHobbies: "",
+  comfortableBikiniChallenges: "",
+
+  // Section 4: Photos & Media
+  socialMediaLinks: "",
+
+  // Section 5: Final Acknowledgement
+  understandPrivateShow: "",
+  understandNoCompensation: "",
+  confirmInformationTrue: "",
+};
 
 export default function FemaleOnboarding() {
-  const [form, setForm] = useState({
-    // Section 1: Basic Information
-    fullName: "",
-    age: "",
-    emailAddress: "",
-    whatsappNumber: "",
-    cityOfResidence: "",
-    otherCity: "",
-    englishSpeaking: "",
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [form, setForm] = useState(initialFormState);
 
-    // Section 2: Physical & Lifestyle Info
-    height: "",
-    weight: "",
-    singleAndAvailable: "",
-    comfortableBeingFilmed: "",
-    traditionalWoman: "",
-    willingToCompete: "",
-    hasChildren: "",
-    willingLieDetector: "",
-    agreeConsentForm: "",
-
-    // Section 3: Personality & Intentions
-    personalityThreeWords: "",
-    relationshipGoals: "",
-    attractedToManOver50: "",
-    goodWifeForBachelor: "",
-    talentsHobbies: "",
-    comfortableBikiniChallenges: "",
-
-    // Section 4: Photos & Media
-    socialMediaLinks: "",
-
-    // Section 5: Final Acknowledgement
-    understandPrivateShow: "",
-    understandNoCompensation: "",
-    confirmInformationTrue: "",
+  // Photo and video URLs
+  const [photoUrls, setPhotoUrls] = useState({
+    photo1: "",
+    photo2: "",
+    photo3: "",
   });
+  const [videoUrl, setVideoUrl] = useState("");
 
   const handleChange = (
     e: React.ChangeEvent<
@@ -50,12 +102,149 @@ export default function FemaleOnboarding() {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handlePhotoUpload = (url: string) => {
+    // Find the next empty photo slot
+    if (!photoUrls.photo1) {
+      setPhotoUrls((prev) => ({ ...prev, photo1: url }));
+    } else if (!photoUrls.photo2) {
+      setPhotoUrls((prev) => ({ ...prev, photo2: url }));
+    } else if (!photoUrls.photo3) {
+      setPhotoUrls((prev) => ({ ...prev, photo3: url }));
+    }
+  };
+
+  const handleVideoUpload = (url: string) => {
+    setVideoUrl(url);
+  };
+
+  const handleUploadError = (error: string) => {
+    toast.error(error);
+  };
+
+  // Clear form function
+  const clearForm = () => {
+    setForm(initialFormState);
+    setPhotoUrls({
+      photo1: "",
+      photo2: "",
+      photo3: "",
+    });
+    setVideoUrl("");
+  };
+
+  // Transform form data to API format
+  const transformFormData = (): CreateUserRequest => {
+    return {
+      fullName: form.fullName || undefined,
+      age: parseInt(form.age),
+      email: form.emailAddress || undefined,
+      whatsappNumber: form.whatsappNumber || undefined,
+      gender: "FEMALE" as const,
+      cityOfResidence: form.cityOfResidence || undefined,
+      cityOther: form.cityOfResidence === "OTHER" ? form.otherCity : undefined,
+      englishProficiency: form.englishSpeaking || undefined,
+      heightCm: parseInt(form.height),
+      weightKg: parseInt(form.weight),
+      isSingleAndAvailable: form.singleAndAvailable === "Yes",
+      comfortableFilming: form.comfortableBeingFilmed === "Yes",
+      traditionalWantsMarriage: form.traditionalWoman === "Yes",
+      willingToCompete: form.willingToCompete === "Yes",
+      children: form.hasChildren || undefined,
+      willingLieDetector: form.willingLieDetector === "Yes",
+      consentForMedia: form.agreeConsentForm === "Yes",
+      personalityThreeWords: form.personalityThreeWords || undefined,
+      relationshipGoals: form.relationshipGoals || undefined,
+      attractionToOlderMen: form.attractedToManOver50 || undefined,
+      whyGoodWife: form.goodWifeForBachelor || undefined,
+      talentsOrHobbies: form.talentsHobbies || undefined,
+      comfortableBikiniChallenges: form.comfortableBikiniChallenges === "Yes",
+      photo1: photoUrls.photo1 || undefined,
+      photo2: photoUrls.photo2 || undefined,
+      photo3: photoUrls.photo3 || undefined,
+      introVideo: videoUrl || undefined,
+      socialMediaLinks: form.socialMediaLinks || undefined,
+      understandsPrivateShow: form.understandPrivateShow === "Yes",
+      understandsNoCompensation: form.understandNoCompensation === "Yes",
+      confirmsTruthful: form.confirmInformationTrue === "Yes",
+    };
+  };
+
+  // Validate form data before submission
+  const validateForm = (): string | null => {
+    if (!form.age || parseInt(form.age) < 28 || parseInt(form.age) > 32) {
+      return "Age must be between 28 and 32";
+    }
+    if (
+      !form.height ||
+      parseInt(form.height) < 100 ||
+      parseInt(form.height) > 250
+    ) {
+      return "Height must be between 100 and 250 cm";
+    }
+    if (
+      !form.weight ||
+      parseInt(form.weight) < 30 ||
+      parseInt(form.weight) > 200
+    ) {
+      return "Weight must be between 30 and 200 kg";
+    }
+    if (form.cityOfResidence === "OTHER" && !form.otherCity) {
+      return "Please specify your city if selecting 'Other'";
+    }
+    return null;
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // submit logic here (API call, validation)
-    alert(
-      "Gracias! Your application for Passport Bachelor has been received.\n\nElite International Match Maker will review all submissions. Only applicants who pass the screening will be contacted for the lie detector phase and interview.\n\nIf you have questions, please contact Ms. Nicole at allexandra@diversityintechnology.org"
-    );
+
+    // Validate form
+    const validationError = validateForm();
+    if (validationError) {
+      toast.error(validationError);
+      return;
+    }
+
+    setIsSubmitting(true);
+
+    try {
+      const userData = transformFormData();
+
+      const response = await fetch(`${API_BASE_URL}/users`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(userData),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || "Failed to submit application");
+      }
+
+      const result = await response.json();
+
+      // Show success toast
+      toast.success(
+        "Gracias! Your application for Passport Bachelor has been received. Elite International Match Maker will review all submissions. Only applicants who pass the screening will be contacted for the lie detector phase and interview.",
+        {
+          autoClose: 8000,
+          position: "top-center",
+        }
+      );
+
+      // Clear form after successful submission
+      clearForm();
+    } catch (error) {
+      console.error("Submission error:", error);
+      toast.error(
+        error instanceof Error
+          ? error.message
+          : "Failed to submit application. Please try again."
+      );
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -153,16 +342,16 @@ export default function FemaleOnboarding() {
                     required
                   >
                     <option value="">Select City</option>
-                    <option value="Barranquilla">Barranquilla</option>
-                    <option value="Santa Marta">Santa Marta</option>
-                    <option value="Cartagena">Cartagena</option>
-                    <option value="Medellín">Medellín</option>
-                    <option value="Bogotá">Bogotá</option>
-                    <option value="Other">Other</option>
+                    <option value="BARRANQUILLA">Barranquilla</option>
+                    <option value="SANTA_MARTA">Santa Marta</option>
+                    <option value="CARTAGENA">Cartagena</option>
+                    <option value="MEDELLIN">Medellín</option>
+                    <option value="BOGOTA">Bogotá</option>
+                    <option value="OTHER">Other</option>
                   </select>
                 </label>
 
-                {form.cityOfResidence === "Other" && (
+                {form.cityOfResidence === "OTHER" && (
                   <label className="block">
                     <span className="text-gray-900 font-medium">
                       If Other, please specify *
@@ -190,9 +379,9 @@ export default function FemaleOnboarding() {
                     required
                   >
                     <option value="">Select Option</option>
-                    <option value="Yes">Yes</option>
-                    <option value="Somewhat">Somewhat</option>
-                    <option value="No">No</option>
+                    <option value="YES">Yes</option>
+                    <option value="SOMEWHAT">Somewhat</option>
+                    <option value="NO">No</option>
                   </select>
                 </label>
               </div>
@@ -214,6 +403,8 @@ export default function FemaleOnboarding() {
                     name="height"
                     value={form.height}
                     onChange={handleChange}
+                    min="100"
+                    max="250"
                     className="w-full mt-1 p-3 border border-gray-500 rounded-lg bg-gray-100 focus:ring-2 focus:ring-[#bfa521] focus:border-transparent"
                     required
                   />
@@ -228,6 +419,8 @@ export default function FemaleOnboarding() {
                     name="weight"
                     value={form.weight}
                     onChange={handleChange}
+                    min="30"
+                    max="200"
                     className="w-full mt-1 p-3 border border-gray-500 rounded-lg bg-gray-100 focus:ring-2 focus:ring-[#bfa521] focus:border-transparent"
                     required
                   />
@@ -316,9 +509,9 @@ export default function FemaleOnboarding() {
                     required
                   >
                     <option value="">Select Option</option>
-                    <option value="No">No</option>
-                    <option value="Yes – 1">Yes – 1</option>
-                    <option value="Yes – 2+">Yes – 2+</option>
+                    <option value="NO">No</option>
+                    <option value="YES_1">Yes – 1</option>
+                    <option value="YES_2_PLUS">Yes – 2+</option>
                   </select>
                 </label>
 
@@ -390,7 +583,7 @@ export default function FemaleOnboarding() {
                     value={form.relationshipGoals}
                     onChange={handleChange}
                     rows={4}
-                    className="w-full mt-1 p-3 border border-gray-500 rounded-lg bg-gray-100 focus:ring-2 focus:ring-[#bfa521] focus:border-transparent"
+                    className="w-full mt-1 p-3 border border-gray-500 text-black rounded-lg bg-gray-100 focus:ring-2 focus:ring-[#bfa521] focus:border-transparent"
                     required
                   />
                 </label>
@@ -404,7 +597,7 @@ export default function FemaleOnboarding() {
                     value={form.attractedToManOver50}
                     onChange={handleChange}
                     rows={4}
-                    className="w-full mt-1 p-3 border border-gray-500 rounded-lg bg-gray-100 focus:ring-2 focus:ring-[#bfa521] focus:border-transparent"
+                    className="w-full mt-1 p-3 border text-black border-gray-500 rounded-lg bg-gray-100 focus:ring-2 focus:ring-[#bfa521] focus:border-transparent"
                     required
                   />
                 </label>
@@ -419,7 +612,7 @@ export default function FemaleOnboarding() {
                     value={form.goodWifeForBachelor}
                     onChange={handleChange}
                     rows={4}
-                    className="w-full mt-1 p-3 border border-gray-500 rounded-lg bg-gray-100 focus:ring-2 focus:ring-[#bfa521] focus:border-transparent"
+                    className="w-full text-black mt-1 p-3 border border-gray-500 rounded-lg bg-gray-100 focus:ring-2 focus:ring-[#bfa521] focus:border-transparent"
                     required
                   />
                 </label>
@@ -434,7 +627,7 @@ export default function FemaleOnboarding() {
                     value={form.talentsHobbies}
                     onChange={handleChange}
                     rows={4}
-                    className="w-full mt-1 p-3 border border-gray-500 rounded-lg bg-gray-100 focus:ring-2 focus:ring-[#bfa521] focus:border-transparent"
+                    className="w-full text-black mt-1 p-3 border border-gray-500 rounded-lg bg-gray-100 focus:ring-2 focus:ring-[#bfa521] focus:border-transparent"
                     required
                   />
                 </label>
@@ -465,32 +658,36 @@ export default function FemaleOnboarding() {
                 Section 4: Photos & Media
               </h2>
 
-              <div className="space-y-4">
+              <div className="space-y-6">
                 <div className="bg-gray-50 p-4 rounded-lg">
-                  <p className="text-gray-700 mb-2">
+                  <p className="text-gray-700 mb-4">
                     <strong>
                       Upload 3 recent photos (at least 1 full-body in swimwear)
                     </strong>
                   </p>
-                  <input
-                    type="file"
-                    multiple
-                    accept="image/*"
-                    className="w-full p-3 border border-gray-500 rounded-lg bg-gray-100 focus:ring-2 focus:ring-[#bfa521] focus:border-transparent"
+                  <FileUpload
+                    accept="image"
+                    multiple={true}
+                    maxFiles={3}
+                    onUploadSuccess={handlePhotoUpload}
+                    onUploadError={handleUploadError}
+                    label="Upload Photos"
                   />
                 </div>
 
                 <div className="bg-gray-50 p-4 rounded-lg">
-                  <p className="text-gray-700 mb-2">
+                  <p className="text-gray-700 mb-4">
                     <strong>
                       Upload a 1-minute video introducing yourself (in English
                       or Spanish)
                     </strong>
                   </p>
-                  <input
-                    type="file"
-                    accept="video/*"
-                    className="w-full p-3 border border-gray-500 rounded-lg bg-gray-100 focus:ring-2 focus:ring-[#bfa521] focus:border-transparent"
+                  <FileUpload
+                    accept="video"
+                    multiple={false}
+                    onUploadSuccess={handleVideoUpload}
+                    onUploadError={handleUploadError}
+                    label="Upload Video"
                   />
                 </div>
 
@@ -575,11 +772,16 @@ export default function FemaleOnboarding() {
 
             <motion.button
               type="submit"
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
-              className="w-full bg-[#bfa521] hover:bg-yellow-400 text-black font-bold text-lg py-4 rounded-lg transition-colors duration-300"
+              disabled={isSubmitting}
+              whileHover={{ scale: isSubmitting ? 1 : 1.02 }}
+              whileTap={{ scale: isSubmitting ? 1 : 0.98 }}
+              className={`w-full font-bold text-lg py-4 rounded-lg transition-colors duration-300 ${
+                isSubmitting
+                  ? "bg-gray-400 cursor-not-allowed"
+                  : "bg-[#bfa521] hover:bg-yellow-400"
+              } text-black`}
             >
-              Submit Application
+              {isSubmitting ? "Submitting..." : "Submit Application"}
             </motion.button>
           </form>
         </motion.div>
