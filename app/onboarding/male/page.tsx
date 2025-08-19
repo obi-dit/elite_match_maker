@@ -115,25 +115,6 @@ export default function MaleOnboarding() {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  const handlePhotoUpload = (url: string) => {
-    // Find the next empty photo slot
-    if (!photoUrls.photo1) {
-      setPhotoUrls((prev) => ({ ...prev, photo1: url }));
-    } else if (!photoUrls.photo2) {
-      setPhotoUrls((prev) => ({ ...prev, photo2: url }));
-    } else if (!photoUrls.photo3) {
-      setPhotoUrls((prev) => ({ ...prev, photo3: url }));
-    }
-  };
-
-  const handleVideoUpload = (url: string) => {
-    setVideoUrl(url);
-  };
-
-  const handleUploadError = (error: string) => {
-    toast.error(error);
-  };
-
   // Clear form function
   const clearForm = () => {
     setForm(initialFormState);
@@ -206,7 +187,7 @@ export default function MaleOnboarding() {
       return "Weight must be between 50 and 150 kg";
     }
     if (form.cityOfResidence === "OTHER" && !form.otherCity) {
-      return "Please specify your city if selecting 'Other'";
+      return "Please specify your city if selecting (Other)";
     }
     if (!form.willingToPay) {
       return "Please confirm your willingness to pay the program fee";
@@ -480,8 +461,8 @@ export default function MaleOnboarding() {
                     <option value="">Select Education</option>
                     <option value="HIGH_SCHOOL">High School</option>
                     <option value="SOME_COLLEGE">Some College</option>
-                    <option value="BACHELORS">Bachelor's Degree</option>
-                    <option value="MASTERS">Master's Degree</option>
+                    <option value="BACHELORS">Bachelors Degree</option>
+                    <option value="MASTERS">Masters Degree</option>
                     <option value="DOCTORATE">Doctorate</option>
                     <option value="OTHER">Other</option>
                   </select>
@@ -625,7 +606,7 @@ export default function MaleOnboarding() {
                     value={form.relationshipHistory}
                     onChange={handleChange}
                     rows={4}
-                    placeholder="Briefly describe your past relationships and what you've learned from them"
+                    placeholder="Briefly describe your past relationships and what you have learned from them"
                     className="w-full mt-1 text-black p-3 border border-gray-500 rounded-lg bg-gray-100 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     required
                   />

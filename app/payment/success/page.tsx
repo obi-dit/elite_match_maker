@@ -74,7 +74,7 @@ export default function PaymentSuccess() {
             Payment Details Not Found
           </h1>
           <p className="text-gray-600 mb-6">
-            We couldn't retrieve your payment information.
+            We couldnt retrieve your payment information.
           </p>
           <button
             onClick={() => window.history.back()}
@@ -219,7 +219,8 @@ export default function PaymentSuccess() {
                 Initial Contact
               </h3>
               <p className="text-purple-100">
-                We'll contact you to discuss next steps and answer any questions
+                We will contact you to discuss next steps and answer any
+                questions
               </p>
             </div>
 
@@ -231,7 +232,7 @@ export default function PaymentSuccess() {
                 Welcome Email
               </h3>
               <p className="text-purple-100">
-                You'll receive a welcome email with program details and next
+                You will receive a welcome email with program details and next
                 steps
               </p>
             </div>
@@ -306,4 +307,3 @@ export default function PaymentSuccess() {
     </div>
   );
 }
-

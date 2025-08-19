@@ -222,7 +222,7 @@ export default function FemaleOnboarding() {
         throw new Error(errorData.message || "Failed to submit application");
       }
 
-      const result = await response.json();
+      // const result = await response.json();
 
       // Show success toast
       toast.success(

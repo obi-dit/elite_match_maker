@@ -31,7 +31,7 @@ export default function PaymentCancel() {
               Payment Cancelled
             </h1>
             <p className="text-lg text-gray-600">
-              Your payment was cancelled. Don't worry, your application is still
+              Your payment was cancelled. Dont worry, your application is still
               saved.
             </p>
           </div>
