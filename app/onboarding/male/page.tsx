@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { toast } from "react-toastify";
 
@@ -46,6 +46,27 @@ interface CreateMaleUserRequest {
   confirmsTruthful?: boolean;
   willingToPay?: boolean;
   paymentMethod?: string;
+  selectedPackage?: string;
+  selectedAddOns?: number[];
+}
+
+interface Package {
+  id: number;
+  name: string;
+  description: string;
+  price: number;
+  isActive: boolean;
+}
+
+interface AddOn {
+  id: number;
+  name: string;
+  description: string;
+  price: number | null;
+  isCustomPricing: boolean;
+  customPricingNote?: string;
+  category: string;
+  isActive: boolean;
 }
 
 // Initial form state
@@ -107,12 +128,101 @@ export default function MaleOnboarding() {
   });
   const [videoUrl, setVideoUrl] = useState("");
 
+  // Package selection state
+  const [packages, setPackages] = useState<Package[]>([]);
+  const [selectedPackage, setSelectedPackage] = useState("");
+  const [isLoadingPackages, setIsLoadingPackages] = useState(false);
+
+  // Add-on selection state
+  const [addOns, setAddOns] = useState<AddOn[]>([]);
+  const [selectedAddOns, setSelectedAddOns] = useState<number[]>([]);
+  const [isLoadingAddOns, setIsLoadingAddOns] = useState(false);
+
   const handleChange = (
     e: React.ChangeEvent<
       HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
     >
   ) => {
     setForm({ ...form, [e.target.name]: e.target.value });
+  };
+
+  // Fetch available packages
+  const fetchPackages = async () => {
+    setIsLoadingPackages(true);
+    try {
+      const response = await fetch(`${API_BASE_URL}/payment/packages`);
+      if (response.ok) {
+        const data = await response.json();
+        setPackages(data.packages || []);
+      }
+    } catch (error) {
+      console.error("Error fetching packages:", error);
+      toast.error("Failed to load packages");
+    } finally {
+      setIsLoadingPackages(false);
+    }
+  };
+
+  // Fetch available add-ons
+  const fetchAddOns = async () => {
+    setIsLoadingAddOns(true);
+    try {
+      const response = await fetch(`${API_BASE_URL}/addons`);
+      if (response.ok) {
+        const data = await response.json();
+        setAddOns(data.addons || []);
+
+        // Auto-select background verification add-on
+        const backgroundVerification = data.addons?.find(
+          (addon: AddOn) => addon.name === "Background Verification"
+        );
+        if (backgroundVerification) {
+          setSelectedAddOns([backgroundVerification.id]);
+        }
+      }
+    } catch (error) {
+      console.error("Error fetching add-ons:", error);
+      toast.error("Failed to load add-ons");
+    } finally {
+      setIsLoadingAddOns(false);
+    }
+  };
+
+  // Load packages and add-ons on component mount
+  useEffect(() => {
+    fetchPackages();
+    fetchAddOns();
+  }, []);
+
+  // Handle add-on selection
+  const handleAddOnSelection = (addOnId: number, checked: boolean) => {
+    if (checked) {
+      setSelectedAddOns((prev) => [...prev, addOnId]);
+    } else {
+      setSelectedAddOns((prev) => prev.filter((id) => id !== addOnId));
+    }
+  };
+
+  // Calculate total price including add-ons
+  const calculateTotalPrice = () => {
+    let total = 0;
+    // Add package price
+    if (selectedPackage) {
+      const pkg = packages.find((p) => p.name === selectedPackage);
+      if (pkg) {
+        total += Number(pkg.price);
+      }
+    }
+
+    // Add selected add-ons prices
+    selectedAddOns.forEach((addOnId) => {
+      const addOn = addOns.find((a) => a.id === addOnId);
+      if (addOn && addOn.price && !addOn.isCustomPricing) {
+        total += Number(addOn.price);
+      }
+    });
+
+    return total;
   };
 
   // Clear form function
@@ -124,6 +234,8 @@ export default function MaleOnboarding() {
       photo3: "",
     });
     setVideoUrl("");
+    setSelectedPackage("");
+    setSelectedAddOns([]);
   };
 
   // Transform form data to API format
@@ -166,6 +278,8 @@ export default function MaleOnboarding() {
       confirmsTruthful: form.confirmInformationTrue === "Yes",
       willingToPay: form.willingToPay === "Yes",
       paymentMethod: form.paymentMethod || undefined,
+      selectedPackage: selectedPackage || undefined,
+      selectedAddOns: selectedAddOns,
     };
   };
 
@@ -189,6 +303,21 @@ export default function MaleOnboarding() {
     if (form.cityOfResidence === "OTHER" && !form.otherCity) {
       return "Please specify your city if selecting (Other)";
     }
+    if (!selectedPackage) {
+      return "Please select a package to continue";
+    }
+
+    // Ensure background verification is always selected
+    const backgroundVerification = addOns.find(
+      (addon) => addon.name === "Background Verification"
+    );
+    if (
+      backgroundVerification &&
+      !selectedAddOns.includes(backgroundVerification.id)
+    ) {
+      return "Background verification is required for all applications";
+    }
+
     if (!form.willingToPay) {
       return "Please confirm your willingness to pay the program fee";
     }
@@ -210,6 +339,7 @@ export default function MaleOnboarding() {
     try {
       const userData = transformFormData();
 
+      // First create the user
       const response = await fetch(`${API_BASE_URL}/users/male`, {
         method: "POST",
         headers: {
@@ -225,9 +355,9 @@ export default function MaleOnboarding() {
 
       const result = await response.json();
 
-      // Check if payment session was created
-      if (result.paymentSession) {
-        // Show success toast
+      // Check if payment session was created by the backend
+      if (result.paymentSession && result.paymentSession.url) {
+        // Redirect to payment
         toast.success(
           "Application submitted successfully! Redirecting to payment...",
           {
@@ -236,23 +366,23 @@ export default function MaleOnboarding() {
           }
         );
 
-        // Redirect to Stripe checkout after a short delay
         setTimeout(() => {
           window.location.href = result.paymentSession.url;
         }, 2000);
-      } else {
-        // Show success toast without payment
-        toast.success(
-          "Thank you! Your application for Passport Bachelor has been received. Elite International Match Maker will review your submission and contact you within 48 hours.",
-          {
-            autoClose: 8000,
-            position: "top-center",
-          }
-        );
-
-        // Clear form after successful submission
-        clearForm();
+        return;
       }
+
+      // Show success toast without payment
+      toast.success(
+        "Thank you! Your application has been received. Elite International Match Maker will review your submission and contact you within 48 hours.",
+        {
+          autoClose: 8000,
+          position: "top-center",
+        }
+      );
+
+      // Clear form after successful submission
+      clearForm();
     } catch (error) {
       console.error("Submission error:", error);
       toast.error(
@@ -275,18 +405,18 @@ export default function MaleOnboarding() {
         >
           <div className="text-center mb-8">
             <h1 className="text-3xl font-bold text-gray-900 mb-2">
-              Passport Bachelor Application
+              Elite Matchmaking Application
             </h1>
             <p className="text-lg text-gray-600 mb-4">
-              Join the exclusive experience in Santa Marta, Colombia
+              Choose your perfect package and start your journey to finding love
             </p>
             <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
               <p className="text-blue-800 font-medium">
-                Program Fee: $6,800 USD
+                Multiple Package Options Available
               </p>
               <p className="text-blue-600 text-sm">
-                Includes luxury accommodation, meals, activities, and
-                matchmaking services
+                From starter packages to exclusive villa experiences - choose
+                what fits your needs
               </p>
             </div>
           </div>
@@ -762,10 +892,175 @@ export default function MaleOnboarding() {
               </div>
             </div>
 
-            {/* Section 6: Final Acknowledgement */}
+            {/* Section 6: Package Selection */}
             <div className="border-b border-gray-200 pb-6">
               <h2 className="text-2xl font-bold text-gray-900 mb-4">
-                Section 6: Final Acknowledgement
+                Section 6: Choose Your Package
+              </h2>
+
+              <div className="space-y-6">
+                {isLoadingPackages ? (
+                  <div className="text-center py-8">
+                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto"></div>
+                    <p className="text-gray-600 mt-2">Loading packages...</p>
+                  </div>
+                ) : (
+                  <div className="grid gap-4">
+                    {packages.map((pkg) => (
+                      <motion.div
+                        key={pkg.id}
+                        whileHover={{ scale: 1.02 }}
+                        whileTap={{ scale: 0.98 }}
+                        className={`border-2 rounded-lg p-4 cursor-pointer transition-all duration-200 ${
+                          selectedPackage === pkg.name
+                            ? "border-blue-600 bg-blue-50"
+                            : "border-gray-300 hover:border-gray-400"
+                        }`}
+                        onClick={() => setSelectedPackage(pkg.name)}
+                      >
+                        <div className="flex items-center justify-between">
+                          <div className="flex-1">
+                            <h3 className="text-lg font-semibold text-gray-900">
+                              {pkg.name}
+                            </h3>
+                            <p className="text-gray-600 text-sm mt-1">
+                              {pkg.description}
+                            </p>
+                          </div>
+                          <div className="text-right">
+                            <div className="text-2xl font-bold text-blue-600">
+                              ${pkg.price.toLocaleString()}
+                            </div>
+                            {selectedPackage === pkg.name && (
+                              <div className="text-blue-600 text-sm mt-1">
+                                ✓ Selected
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      </motion.div>
+                    ))}
+                  </div>
+                )}
+
+                {selectedPackage && (
+                  <div className="bg-green-50 border border-green-200 rounded-lg p-4">
+                    <p className="text-green-800 font-medium">
+                      Selected Package:{" "}
+                      <span className="font-bold">{selectedPackage}</span>
+                    </p>
+                    <p className="text-green-600 text-sm mt-1">
+                      You will be redirected to payment after form submission.
+                    </p>
+                  </div>
+                )}
+
+                {!selectedPackage && packages.length > 0 && (
+                  <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+                    <p className="text-yellow-800 font-medium">
+                      Please select a package to continue
+                    </p>
+                  </div>
+                )}
+
+                {/* Add-On Selection */}
+                {selectedPackage && addOns.length > 0 && (
+                  <div className="mt-6">
+                    <h3 className="text-lg font-semibold text-gray-900 mb-4">
+                      Additional Services (Optional)
+                    </h3>
+
+                    <div className="bg-green-50 border border-green-200 rounded-lg p-4 mb-4">
+                      <p className="text-green-800 text-sm">
+                        <span className="font-semibold">Note:</span> Background
+                        verification is automatically included for your safety
+                        and is pre-selected by default. You can optionally add
+                        other services below.
+                      </p>
+                    </div>
+
+                    {isLoadingAddOns ? (
+                      <div className="text-center py-4">
+                        <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-600 mx-auto"></div>
+                        <p className="text-gray-600 mt-2">Loading add-ons...</p>
+                      </div>
+                    ) : (
+                      <div className="space-y-3">
+                        {addOns.map((addOn) => (
+                          <div
+                            key={addOn.id}
+                            className="flex items-center space-x-3"
+                          >
+                            <input
+                              type="checkbox"
+                              id={`addon-${addOn.id}`}
+                              checked={selectedAddOns.includes(addOn.id)}
+                              onChange={(e) =>
+                                handleAddOnSelection(addOn.id, e.target.checked)
+                              }
+                              className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                            />
+                            <label
+                              htmlFor={`addon-${addOn.id}`}
+                              className="flex-1"
+                            >
+                              <div className="flex justify-between items-start">
+                                <div>
+                                  <span className="font-medium text-gray-900">
+                                    {addOn.name}
+                                  </span>
+                                  <p className="text-sm text-gray-600 mt-1">
+                                    {addOn.description}
+                                  </p>
+                                </div>
+                                <div className="text-right">
+                                  {addOn.isCustomPricing ? (
+                                    <div>
+                                      <span className="text-sm text-gray-500">
+                                        Custom pricing
+                                      </span>
+                                      <p className="text-xs text-gray-400 mt-1">
+                                        {addOn.customPricingNote}
+                                      </p>
+                                    </div>
+                                  ) : (
+                                    <span className="font-semibold text-blue-600">
+                                      ${addOn.price?.toLocaleString()}
+                                    </span>
+                                  )}
+                                </div>
+                              </div>
+                            </label>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+
+                    {/* Total Price Display */}
+                    {selectedPackage && (
+                      <div className="mt-6 bg-blue-50 border border-blue-200 rounded-lg p-4">
+                        <div className="flex justify-between items-center">
+                          <span className="text-lg font-semibold text-gray-900">
+                            Total Price:
+                          </span>
+                          <span className="text-2xl font-bold text-blue-600">
+                            ${calculateTotalPrice().toLocaleString()}
+                          </span>
+                        </div>
+                        <p className="text-sm text-blue-600 mt-2">
+                          Package: {selectedPackage} + Selected Add-ons
+                        </p>
+                      </div>
+                    )}
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* Section 7: Final Acknowledgement */}
+            <div className="border-b border-gray-200 pb-6">
+              <h2 className="text-2xl font-bold text-gray-900 mb-4">
+                Section 7: Final Acknowledgement
               </h2>
 
               <div className="space-y-4">
@@ -862,18 +1157,22 @@ export default function MaleOnboarding() {
 
             <motion.button
               type="submit"
-              disabled={isSubmitting}
-              whileHover={{ scale: isSubmitting ? 1 : 1.02 }}
-              whileTap={{ scale: isSubmitting ? 1 : 0.98 }}
+              disabled={isSubmitting || !selectedPackage}
+              whileHover={{
+                scale: isSubmitting || !selectedPackage ? 1 : 1.02,
+              }}
+              whileTap={{ scale: isSubmitting || !selectedPackage ? 1 : 0.98 }}
               className={`w-full font-bold text-lg py-4 rounded-lg transition-colors duration-300 ${
-                isSubmitting
+                isSubmitting || !selectedPackage
                   ? "bg-gray-400 cursor-not-allowed"
                   : "bg-blue-600 hover:bg-blue-700"
               } text-white`}
             >
               {isSubmitting
                 ? "Submitting..."
-                : "Submit Application & Proceed to Payment"}
+                : !selectedPackage
+                ? "Please Select a Package"
+                : `Submit Application & Pay $${calculateTotalPrice().toLocaleString()}`}
             </motion.button>
           </form>
         </motion.div>
