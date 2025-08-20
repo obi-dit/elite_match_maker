@@ -274,9 +274,9 @@ export default function MaleOnboarding() {
       introVideo: videoUrl || undefined,
       socialMediaLinks: form.socialMediaLinks || undefined,
       understandsPrivateShow: form.understandPrivateShow === "Yes",
-      understandsNoCompensation: form.understandNoCompensation === "Yes",
+      understandsNoCompensation: true,
       confirmsTruthful: form.confirmInformationTrue === "Yes",
-      willingToPay: form.willingToPay === "Yes",
+      willingToPay: true,
       paymentMethod: form.paymentMethod || undefined,
       selectedPackage: selectedPackage || undefined,
       selectedAddOns: selectedAddOns,
@@ -1082,7 +1082,7 @@ export default function MaleOnboarding() {
                   </select>
                 </label>
 
-                <label className="block">
+                {/* <label className="block">
                   <span className="text-gray-900 font-medium">
                     Do you understand the program fee is $6,800 USD and includes
                     all accommodations, meals, and activities? *
@@ -1115,7 +1115,7 @@ export default function MaleOnboarding() {
                     <option value="Yes">Yes</option>
                     <option value="No">No</option>
                   </select>
-                </label>
+                </label> */}
 
                 <label className="block">
                   <span className="text-gray-900 font-medium">
