@@ -136,7 +136,7 @@ export default function WhatToExpectPage() {
                 Contestants
               </h3>
               <p className="text-gray-700 text-center">
-                20 Pre-screened Colombian women, ages 28-32
+                20 Pre-screened Colombian women, ages 28-38
               </p>
             </div>
           </div>
