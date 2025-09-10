@@ -33,28 +33,27 @@ export default function PaymentSuccessPage({
 
   useEffect(() => {
     if (sessionId) {
+      const fetchTransaction = async () => {
+        try {
+          const response = await fetch(
+            `${API_BASE_URL}/payment/transaction/${sessionId}`
+          );
+          if (response.ok) {
+            const data = await response.json();
+            setTransaction(data.transaction);
+          } else {
+            toast.error("Failed to fetch transaction details");
+          }
+        } catch (error) {
+          console.error("Error fetching transaction:", error);
+          toast.error("Failed to fetch transaction details");
+        } finally {
+          setLoading(false);
+        }
+      };
       fetchTransaction();
     }
   }, [sessionId]);
-
-  const fetchTransaction = async () => {
-    try {
-      const response = await fetch(
-        `${API_BASE_URL}/payment/transaction/${sessionId}`
-      );
-      if (response.ok) {
-        const data = await response.json();
-        setTransaction(data.transaction);
-      } else {
-        toast.error("Failed to fetch transaction details");
-      }
-    } catch (error) {
-      console.error("Error fetching transaction:", error);
-      toast.error("Failed to fetch transaction details");
-    } finally {
-      setLoading(false);
-    }
-  };
 
   if (loading) {
     return (

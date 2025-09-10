@@ -14,11 +14,9 @@ import {
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import {
-  Upload,
   FileAudio,
   FileVideo,
   Image,
-  Calendar,
   Clock,
   ArrowLeft,
   Save,
@@ -39,7 +37,7 @@ interface PodcastFormData {
 
 export default function PodcastUpload() {
   const router = useRouter();
-  const { user, isAuthenticated } = useAuthStore();
+  const { isAuthenticated } = useAuthStore();
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState<PodcastFormData>({
     title: "",
@@ -227,6 +225,7 @@ export default function PodcastUpload() {
                       Status
                     </label>
                     <select
+                      aria-label="Status"
                       name="status"
                       value={formData.status}
                       onChange={handleInputChange}
@@ -243,6 +242,7 @@ export default function PodcastUpload() {
                       Type
                     </label>
                     <select
+                      aria-label="Type"
                       name="type"
                       value={formData.type}
                       onChange={handleInputChange}
@@ -261,6 +261,7 @@ export default function PodcastUpload() {
                       Scheduled Date & Time
                     </label>
                     <input
+                      aria-label="Scheduled Date & Time"
                       type="datetime-local"
                       name="scheduledAt"
                       value={formData.scheduledAt}
@@ -310,6 +311,7 @@ export default function PodcastUpload() {
                     >
                       {category}
                       <button
+                        aria-label="Remove category"
                         type="button"
                         onClick={() => removeCategory(category)}
                         className="ml-2 hover:text-red-400"
@@ -339,6 +341,7 @@ export default function PodcastUpload() {
                       Audio File
                     </label>
                     <input
+                      aria-label="Audio file"
                       type="file"
                       accept="audio/*"
                       onChange={(e) => handleFileChange(e, "audio")}
@@ -358,6 +361,7 @@ export default function PodcastUpload() {
                       Video File
                     </label>
                     <input
+                      aria-label="Video file"
                       type="file"
                       accept="video/*"
                       onChange={(e) => handleFileChange(e, "video")}
@@ -373,10 +377,14 @@ export default function PodcastUpload() {
                   {/* Thumbnail File */}
                   <div className="space-y-2">
                     <label className="block text-white text-sm font-medium">
-                      <Image className="h-4 w-4 inline mr-2" />
+                      <Image
+                        aria-label="Thumbnail"
+                        className="h-4 w-4 inline mr-2"
+                      />
                       Thumbnail
                     </label>
                     <input
+                      aria-label="Thumbnail"
                       type="file"
                       accept="image/*"
                       onChange={(e) => handleFileChange(e, "thumbnail")}
@@ -426,7 +434,3 @@ export default function PodcastUpload() {
     </div>
   );
 }
-
-
-
-

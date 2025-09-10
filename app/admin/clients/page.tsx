@@ -4,13 +4,7 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useAuthStore, getAuthHeaders, isAdmin } from "@/store/authStore";
 import { handleAuthError } from "@/utils/auth";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -22,7 +16,6 @@ import {
   Crown,
   ArrowLeft,
   Search,
-  Filter,
 } from "lucide-react";
 
 interface Client {
@@ -55,7 +48,7 @@ interface Client {
 
 export default function ClientManagement() {
   const router = useRouter();
-  const { user, isAuthenticated } = useAuthStore();
+  const { isAuthenticated } = useAuthStore();
   const [clients, setClients] = useState<Client[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
@@ -205,6 +198,7 @@ export default function ClientManagement() {
             <select
               value={filterStatus}
               onChange={(e) => setFilterStatus(e.target.value)}
+              aria-label="Filter clients"
               className="px-3 py-2 bg-white/10 border border-white/20 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-purple-500"
             >
               <option value="all">All Clients</option>
@@ -414,7 +408,3 @@ export default function ClientManagement() {
     </div>
   );
 }
-
-
-
-

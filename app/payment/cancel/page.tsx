@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion";
 import { useSearchParams } from "next/navigation";
+import { Suspense } from "react";
 import Link from "next/link";
 import {
   XCircle,
@@ -12,7 +13,7 @@ import {
   HelpCircle,
 } from "lucide-react";
 
-export default function PaymentCancelPage() {
+function PaymentCancelContent() {
   const searchParams = useSearchParams();
   const sessionId = searchParams.get("session_id");
   const reason = searchParams.get("reason") || "Payment was cancelled";
@@ -39,7 +40,7 @@ export default function PaymentCancelPage() {
           Payment Cancelled
         </h1>
         <p className="text-xl text-gray-300 mb-8 max-w-2xl mx-auto">
-          Your payment was not completed. Don't worry, you can try again
+          Your payment was not completed. Don&apos;t worry, you can try again
           anytime.
         </p>
       </motion.div>
@@ -94,8 +95,8 @@ export default function PaymentCancelPage() {
                 <div>
                   <h3 className="text-white font-semibold mb-1">Need Help?</h3>
                   <p className="text-gray-300 text-sm">
-                    If you're experiencing issues, our support team is here to
-                    help.
+                    If you&apos;re experiencing issues, our support team is here
+                    to help.
                   </p>
                 </div>
               </div>
@@ -134,7 +135,7 @@ export default function PaymentCancelPage() {
             className="text-center mt-12"
           >
             <p className="text-gray-300 mb-4">
-              Having trouble with payments? We're here to help.
+              Having trouble with payments? We&apos;re here to help.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link
@@ -179,5 +180,22 @@ export default function PaymentCancelPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function PaymentCancelPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 flex items-center justify-center">
+          <div className="text-center">
+            <div className="w-8 h-8 border-2 border-purple-400 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+            <p className="text-gray-300">Loading payment status...</p>
+          </div>
+        </div>
+      }
+    >
+      <PaymentCancelContent />
+    </Suspense>
   );
 }

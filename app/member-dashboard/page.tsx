@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
+import Image from "next/image";
 import {
   Card,
   CardContent,
@@ -44,7 +45,13 @@ interface Podcast {
 }
 
 interface DashboardData {
-  userSubscription: any;
+  userSubscription: {
+    id: string;
+    tier: string;
+    status: string;
+    startDate: string;
+    endDate: string;
+  } | null;
   newRecordedPodcasts: Podcast[];
   previousPodcasts: Podcast[];
   livePodcasts: Podcast[];
@@ -362,9 +369,10 @@ export default function MemberDashboard() {
               >
                 <div className="aspect-video bg-gray-200 relative">
                   {podcast.thumbnailUrl ? (
-                    <img
+                    <Image
                       src={podcast.thumbnailUrl}
                       alt={podcast.title}
+                      fill
                       className="w-full h-full object-cover"
                     />
                   ) : (

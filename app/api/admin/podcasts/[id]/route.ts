@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const authHeader = request.headers.get("authorization");
@@ -14,7 +14,7 @@ export async function DELETE(
       );
     }
 
-    const podcastId = params.id;
+    const { id: podcastId } = await params;
 
     const response = await fetch(
       `${process.env.NEXT_PUBLIC_API_URL}/admin/podcasts/${podcastId}`,
@@ -44,7 +44,3 @@ export async function DELETE(
     );
   }
 }
-
-
-
-

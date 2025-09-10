@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, Suspense } from "react";
 import { motion } from "framer-motion";
 import { useSearchParams, useRouter } from "next/navigation";
 import Link from "next/link";
@@ -14,11 +14,9 @@ import {
   Globe,
   ArrowRight,
   Download,
-  Calendar,
   CreditCard,
   User,
   Mail,
-  Clock,
 } from "lucide-react";
 
 interface PaymentSuccessData {
@@ -32,7 +30,7 @@ interface PaymentSuccessData {
   nextBillingDate?: string;
 }
 
-export default function PaymentSuccessPage() {
+function PaymentSuccessContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const [paymentData, setPaymentData] = useState<PaymentSuccessData | null>(
@@ -262,7 +260,7 @@ export default function PaymentSuccessPage() {
             className="bg-white/10 backdrop-blur-lg rounded-2xl p-8 border border-white/20 mb-8"
           >
             <h3 className="text-2xl font-bold text-white mb-6 text-center">
-              What's Next?
+              What&apos;s Next?
             </h3>
             <div className="grid md:grid-cols-3 gap-6">
               <div className="text-center">
@@ -273,8 +271,8 @@ export default function PaymentSuccessPage() {
                   Check Your Email
                 </h4>
                 <p className="text-gray-300 text-sm">
-                  We've sent you a welcome email with your login credentials and
-                  getting started guide.
+                  We&apos;ve sent you a welcome email with your login
+                  credentials and getting started guide.
                 </p>
               </div>
 
@@ -374,5 +372,22 @@ export default function PaymentSuccessPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function PaymentSuccessPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="min-h-screen bg-gradient-to-br from-sky-100 via-white to-teal-50 flex items-center justify-center">
+          <div className="text-center">
+            <div className="w-8 h-8 border-2 border-teal-600 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+            <p className="text-gray-600">Loading payment confirmation...</p>
+          </div>
+        </div>
+      }
+    >
+      <PaymentSuccessContent />
+    </Suspense>
   );
 }

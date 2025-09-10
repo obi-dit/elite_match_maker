@@ -1,13 +1,11 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { motion } from "framer-motion";
 import { useSearchParams, useRouter } from "next/navigation";
 import {
   ArrowLeft,
   Crown,
-  Star,
-  Gem,
   Diamond,
   Check,
   Lock,
@@ -21,7 +19,7 @@ import {
 import Link from "next/link";
 import { Subscription, SubscriptionFeature } from "@/typings/subscription";
 
-export default function MembershipRegistration() {
+function MembershipRegistrationContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const selectedTier = searchParams.get("tier") || "bronze";
@@ -45,27 +43,6 @@ export default function MembershipRegistration() {
     elitevip: <Diamond className="w-8 h-8" />,
   };
 
-  const SubscriptionColorMapping: Record<string, string> = {
-    bronze: "from-teal-400 to-teal-600",
-    silver: "from-sky-400 to-sky-600",
-    gold: "from-teal-500 to-sky-600",
-    elitevip: "from-sky-500 to-teal-700",
-  };
-
-  const SubscriptionCTAMapping: Record<string, string> = {
-    bronze: "Start Bronze",
-    silver: "Upgrade to Silver",
-    gold: "Go Gold",
-    elitevip: "Become Elite VIP",
-  };
-
-  const PopularSubscriptionMapping: Record<string, boolean> = {
-    bronze: false,
-    silver: true,
-    gold: false,
-    elitevip: false,
-  };
-
   const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL;
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -85,7 +62,7 @@ export default function MembershipRegistration() {
       setSelectedTierData(data);
     };
     fetchSubscription();
-  }, [selectedTier]);
+  }, [selectedTier, API_BASE_URL]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -341,7 +318,7 @@ export default function MembershipRegistration() {
 
             <div className="space-y-4 mb-8">
               <h3 className="text-lg font-semibold text-white mb-3">
-                What's Included:
+                What&apos;s Included:
               </h3>
               {selectedTierData.subscriptionFeatures.map(
                 (feature: SubscriptionFeature, index: number) => (
@@ -370,5 +347,22 @@ export default function MembershipRegistration() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function MembershipRegistration() {
+  return (
+    <Suspense
+      fallback={
+        <div className="min-h-screen bg-gradient-to-br from-sky-100 via-white to-teal-50 flex items-center justify-center">
+          <div className="text-center">
+            <div className="w-8 h-8 border-2 border-teal-600 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+            <p className="text-gray-600">Loading registration form...</p>
+          </div>
+        </div>
+      }
+    >
+      <MembershipRegistrationContent />
+    </Suspense>
   );
 }

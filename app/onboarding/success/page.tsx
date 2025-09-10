@@ -1,26 +1,18 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, Suspense } from "react";
 import { motion } from "framer-motion";
 import { useSearchParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import {
   CheckCircle,
   Crown,
-  Star,
   Heart,
-  Users,
-  Calendar,
-  Mail,
-  Phone,
-  MapPin,
   ArrowRight,
   Download,
   Clock,
   Shield,
   Gift,
-  Camera,
-  Video,
   MessageCircle,
 } from "lucide-react";
 
@@ -37,7 +29,7 @@ interface OnboardingSuccessData {
   timeline: string[];
 }
 
-export default function OnboardingSuccessPage() {
+function OnboardingSuccessContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const [successData, setSuccessData] = useState<OnboardingSuccessData | null>(
@@ -427,4 +419,19 @@ export default function OnboardingSuccessPage() {
   );
 }
 
-
+export default function OnboardingSuccessPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="min-h-screen bg-gradient-to-br from-sky-100 via-white to-teal-50 flex items-center justify-center">
+          <div className="text-center">
+            <div className="w-8 h-8 border-2 border-teal-600 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+            <p className="text-gray-600">Loading onboarding status...</p>
+          </div>
+        </div>
+      }
+    >
+      <OnboardingSuccessContent />
+    </Suspense>
+  );
+}

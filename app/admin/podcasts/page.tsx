@@ -13,16 +13,7 @@ import {
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import {
-  Plus,
-  Edit,
-  Trash2,
-  Play,
-  Pause,
-  Eye,
-  Calendar,
-  Clock,
-} from "lucide-react";
+import { Plus, Edit, Trash2, Eye, Calendar, Clock } from "lucide-react";
 
 interface Podcast {
   id: number;
@@ -39,12 +30,12 @@ interface Podcast {
   viewCount: number;
   createdAt: string;
   podcastCategories: { category: string }[];
-  podcastAccess: any[];
+  podcastAccess: Record<string, unknown>[];
 }
 
 export default function PodcastManagement() {
   const router = useRouter();
-  const { user, isAuthenticated } = useAuthStore();
+  const { isAuthenticated } = useAuthStore();
   const [podcasts, setPodcasts] = useState<Podcast[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -293,7 +284,3 @@ export default function PodcastManagement() {
     </div>
   );
 }
-
-
-
-

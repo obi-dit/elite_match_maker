@@ -14,7 +14,7 @@ export default function AdminProtectedRoute({
   redirectTo = "/login",
 }: AdminProtectedRouteProps) {
   const router = useRouter();
-  const { isAuthenticated, user, token } = useAuthStore();
+  const { isAuthenticated, token } = useAuthStore();
   const [isChecking, setIsChecking] = useState(true);
 
   useEffect(() => {
@@ -55,7 +55,3 @@ export default function AdminProtectedRoute({
   // If we reach here, user is authenticated and is admin
   return <>{children}</>;
 }
-
-
-
-

@@ -3,64 +3,14 @@
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import Link from "next/link";
-import {
-  Crown,
-  Star,
-  Gem,
-  Diamond,
-  Check,
-  Play,
-  Users,
-  Video,
-  MessageCircle,
-  Calendar,
-  ArrowRight,
-  Zap,
-  Heart,
-  Globe,
-  Shield,
-} from "lucide-react";
+import { Check, Play, Users, ArrowRight, Zap, Heart } from "lucide-react";
 import { Subscription } from "@/typings/subscription";
-
-interface MembershipTier {
-  id: string;
-  name: string;
-  price: number;
-  period: string;
-  color: string;
-  icon: React.ReactNode;
-  features: string[];
-  popular?: boolean;
-  cta: string;
-}
-
-export const SubcriptionIconMapping: Record<string, React.ReactNode> = {
-  bronze: <Crown className="w-8 h-8" />,
-  silver: <Globe className="w-8 h-8" />,
-  gold: <Shield className="w-8 h-8" />,
-  elitevip: <Diamond className="w-8 h-8" />,
-};
-
-export const SubscriptionColorMapping: Record<string, string> = {
-  bronze: "from-teal-400 to-teal-600",
-  silver: "from-sky-400 to-sky-600",
-  gold: "from-teal-500 to-sky-600",
-  elitevip: "from-sky-500 to-teal-700",
-};
-
-export const SubscriptionCTAMapping: Record<string, string> = {
-  bronze: "Start Bronze",
-  silver: "Upgrade to Silver",
-  gold: "Go Gold",
-  elitevip: "Become Elite VIP",
-};
-
-export const PopularSubscriptionMapping: Record<string, boolean> = {
-  bronze: false,
-  silver: true,
-  gold: false,
-  elitevip: false,
-};
+import {
+  SubcriptionIconMapping,
+  SubscriptionColorMapping,
+  SubscriptionCTAMapping,
+  PopularSubscriptionMapping,
+} from "@/utils/subscription-mappings";
 
 export default function BecomeMemberPage() {
   const [subscriptions, setSubscriptions] = useState<Subscription[]>([]);

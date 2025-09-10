@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { useAuthStore, getAuthHeaders, isAdmin } from "@/store/authStore";
+import { useAuthStore, getAuthHeaders } from "@/store/authStore";
 import { handleAuthError } from "@/utils/auth";
 import AdminProtectedRoute from "@/components/AdminProtectedRoute";
 import {
@@ -20,9 +20,6 @@ import {
   UserX,
   Podcast,
   Upload,
-  Settings,
-  BarChart3,
-  Calendar,
   TrendingUp,
 } from "lucide-react";
 
@@ -31,13 +28,13 @@ interface DashboardStats {
   totalClients: number;
   totalApplicants: number;
   totalPodcasts: number;
-  recentUsers: any[];
-  recentPodcasts: any[];
+  recentUsers: Record<string, unknown>[];
+  recentPodcasts: Record<string, unknown>[];
 }
 
 export default function AdminDashboard() {
   const router = useRouter();
-  const { user, isAuthenticated } = useAuthStore();
+  const { user } = useAuthStore();
   const [stats, setStats] = useState<DashboardStats | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -234,14 +231,18 @@ export default function AdminDashboard() {
                 <div className="space-y-3">
                   {stats?.recentUsers?.map((user) => (
                     <div
-                      key={user.id}
+                      key={user.id as string}
                       className="flex items-center justify-between p-3 bg-white/5 rounded-lg"
                     >
                       <div>
                         <p className="text-white font-medium">
-                          {user.firstName || user.fullName || "Unknown"}
+                          {(user.firstName as string) ||
+                            (user.fullName as string) ||
+                            "Unknown"}
                         </p>
-                        <p className="text-gray-400 text-sm">{user.email}</p>
+                        <p className="text-gray-400 text-sm">
+                          {user.email as string}
+                        </p>
                       </div>
                       <div className="flex items-center gap-2">
                         <Badge
@@ -279,15 +280,17 @@ export default function AdminDashboard() {
                 <div className="space-y-3">
                   {stats?.recentPodcasts?.map((podcast) => (
                     <div
-                      key={podcast.id}
+                      key={podcast.id as string}
                       className="flex items-center justify-between p-3 bg-white/5 rounded-lg"
                     >
                       <div>
                         <p className="text-white font-medium">
-                          {podcast.title}
+                          {podcast.title as string}
                         </p>
                         <p className="text-gray-400 text-sm">
-                          {new Date(podcast.createdAt).toLocaleDateString()}
+                          {new Date(
+                            podcast.createdAt as string
+                          ).toLocaleDateString()}
                         </p>
                       </div>
                       <div className="flex items-center gap-2">
@@ -303,7 +306,7 @@ export default function AdminDashboard() {
                               : "bg-yellow-600"
                           }
                         >
-                          {podcast.status}
+                          {podcast.status as string}
                         </Badge>
                       </div>
                     </div>

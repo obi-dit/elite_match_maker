@@ -4,13 +4,7 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useAuthStore, getAuthHeaders, isAdmin } from "@/store/authStore";
 import { handleAuthError } from "@/utils/auth";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -23,7 +17,6 @@ import {
   Heart,
   ArrowLeft,
   Search,
-  Filter,
   Eye,
 } from "lucide-react";
 
@@ -60,7 +53,7 @@ interface Applicant {
 
 export default function ApplicantManagement() {
   const router = useRouter();
-  const { user, isAuthenticated } = useAuthStore();
+  const { isAuthenticated } = useAuthStore();
   const [applicants, setApplicants] = useState<Applicant[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
@@ -455,7 +448,3 @@ export default function ApplicantManagement() {
     </div>
   );
 }
-
-
-
-
