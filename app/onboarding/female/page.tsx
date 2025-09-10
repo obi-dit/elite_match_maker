@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { toast } from "react-toastify";
+import { useRouter } from "next/navigation";
 import FileUpload from "../../../components/FileUpload";
 
 // API endpoint configuration
@@ -83,6 +84,7 @@ const initialFormState = {
 };
 
 export default function FemaleOnboarding() {
+  const router = useRouter();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [form, setForm] = useState(initialFormState);
 
@@ -228,10 +230,17 @@ export default function FemaleOnboarding() {
       toast.success(
         "Gracias! Your application for Passport Bachelor has been received. Elite International Match Maker will review all submissions. Only applicants who pass the screening will be contacted for the lie detector phase and interview.",
         {
-          autoClose: 8000,
+          autoClose: 3000,
           position: "top-center",
         }
       );
+
+      // Redirect to success page after a short delay
+      setTimeout(() => {
+        router.push(
+          `/onboarding/success?session_id=app_${Date.now()}&type=female`
+        );
+      }, 2000);
 
       // Clear form after successful submission
       clearForm();

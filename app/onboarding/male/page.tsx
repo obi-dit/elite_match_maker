@@ -112,7 +112,7 @@ const initialFormState = {
   understandPrivateShow: "",
   understandNoCompensation: "",
   confirmInformationTrue: "",
-  willingToPay: "",
+  willingToPay: "Yes",
   paymentMethod: "",
 };
 
@@ -276,7 +276,7 @@ export default function MaleOnboarding() {
       understandsPrivateShow: form.understandPrivateShow === "Yes",
       understandsNoCompensation: true,
       confirmsTruthful: form.confirmInformationTrue === "Yes",
-      willingToPay: true,
+      willingToPay: form.willingToPay === "Yes",
       paymentMethod: form.paymentMethod || undefined,
       selectedPackage: selectedPackage || undefined,
       selectedAddOns: selectedAddOns,
@@ -367,6 +367,17 @@ export default function MaleOnboarding() {
         );
 
         setTimeout(() => {
+          // Store session data for success page
+          localStorage.setItem(
+            "onboardingSession",
+            JSON.stringify({
+              sessionId: result.paymentSession.sessionId,
+              userType: "male",
+              packageType: "Elite Matchmaking Package",
+              amount: result.paymentSession.amount,
+              currency: result.paymentSession.currency,
+            })
+          );
           window.location.href = result.paymentSession.url;
         }, 2000);
         return;
