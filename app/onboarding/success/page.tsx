@@ -204,7 +204,7 @@ function OnboardingSuccessContent() {
                       {successData.userName}
                     </span>
                   </div>
-                  <div className="flex justify-between items-center py-2 border-b border-white/10">
+                  {/* <div className="flex justify-between items-center py-2 border-b border-white/10">
                     <span className="text-gray-300">Email</span>
                     <span className="text-white">{successData.userEmail}</span>
                   </div>
@@ -215,7 +215,7 @@ function OnboardingSuccessContent() {
                         ${successData.amount} {successData.currency}
                       </span>
                     </div>
-                  )}
+                  )} */}
                   <div className="flex justify-between items-center py-2">
                     <span className="text-gray-300">Status</span>
                     <span className="text-green-400 font-semibold flex items-center">

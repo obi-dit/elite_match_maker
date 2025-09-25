@@ -8,12 +8,12 @@ export async function GET(request: NextRequest) {
 
     if (!authHeader) {
       return NextResponse.json(
-        { error: "No authorization header" },
+        { error: "Authorization header required" },
         { status: 401 }
       );
     }
 
-    const response = await fetch(`${API_BASE_URL}/admin/clients`, {
+    const response = await fetch(`${API_BASE_URL}/likes/liked-applicants`, {
       method: "GET",
       headers: {
         Authorization: authHeader,
@@ -22,19 +22,18 @@ export async function GET(request: NextRequest) {
     });
 
     if (!response.ok) {
-      return NextResponse.json(
-        { error: "Failed to fetch clients" },
-        { status: response.status }
-      );
+      const errorData = await response.json();
+      return NextResponse.json(errorData, { status: response.status });
     }
 
     const data = await response.json();
     return NextResponse.json(data);
   } catch (error) {
-    console.error("Error in admin clients API:", error);
+    console.error("Error fetching liked applicants:", error);
     return NextResponse.json(
       { error: "Internal server error" },
       { status: 500 }
     );
   }
 }
+

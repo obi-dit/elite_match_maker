@@ -107,10 +107,39 @@ export default function PodcastUpload() {
     setLoading(true);
 
     try {
+      // Validate required fields
+      if (!formData.title.trim()) {
+        alert("Please enter a podcast title");
+        setLoading(false);
+        return;
+      }
+
+      // Validate file sizes
+      if (formData.audioFile && formData.audioFile.size > 100 * 1024 * 1024) {
+        alert("Audio file is too large. Maximum size is 100MB.");
+        setLoading(false);
+        return;
+      }
+
+      if (formData.videoFile && formData.videoFile.size > 500 * 1024 * 1024) {
+        alert("Video file is too large. Maximum size is 500MB.");
+        setLoading(false);
+        return;
+      }
+
+      if (
+        formData.thumbnailFile &&
+        formData.thumbnailFile.size > 10 * 1024 * 1024
+      ) {
+        alert("Thumbnail file is too large. Maximum size is 10MB.");
+        setLoading(false);
+        return;
+      }
+
       // Create FormData for file upload
       const submitData = new FormData();
       submitData.append("title", formData.title);
-      submitData.append("description", formData.description);
+      submitData.append("description", formData.description || "");
       submitData.append("status", formData.status);
       submitData.append("type", formData.type);
       submitData.append("categories", JSON.stringify(formData.categories));
@@ -131,6 +160,13 @@ export default function PodcastUpload() {
         submitData.append("thumbnailFile", formData.thumbnailFile);
       }
 
+      console.log("Uploading podcast:", {
+        title: formData.title,
+        hasAudio: !!formData.audioFile,
+        hasVideo: !!formData.videoFile,
+        hasThumbnail: !!formData.thumbnailFile,
+      });
+
       const response = await fetch("/api/admin/podcasts/upload", {
         method: "POST",
         headers: {
@@ -140,13 +176,19 @@ export default function PodcastUpload() {
       });
 
       if (!response.ok) {
-        await handleAuthError(response);
+        const errorData = await response.json().catch(() => ({}));
+        console.error("Upload error:", errorData);
+        alert(`Upload failed: ${errorData.error || "Unknown error"}`);
         return;
       }
 
+      const result = await response.json();
+      console.log("Upload successful:", result);
+      alert("Podcast uploaded successfully!");
       router.push("/admin/podcasts");
     } catch (error) {
       console.error("Error uploading podcast:", error);
+      alert("An error occurred while uploading the podcast. Please try again.");
     } finally {
       setLoading(false);
     }

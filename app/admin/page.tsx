@@ -21,6 +21,7 @@ import {
   Podcast,
   Upload,
   TrendingUp,
+  Heart,
 } from "lucide-react";
 
 interface DashboardStats {
@@ -28,6 +29,7 @@ interface DashboardStats {
   totalClients: number;
   totalApplicants: number;
   totalPodcasts: number;
+  totalLikes: number;
   recentUsers: Record<string, unknown>[];
   recentPodcasts: Record<string, unknown>[];
 }
@@ -85,7 +87,7 @@ export default function AdminDashboard() {
           </div>
 
           {/* Stats Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6 mb-8">
             <Card className="bg-white/10 backdrop-blur-lg border-white/20">
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                 <CardTitle className="text-sm font-medium text-white">
@@ -138,6 +140,20 @@ export default function AdminDashboard() {
               <CardContent>
                 <div className="text-2xl font-bold text-white">
                   {stats?.totalPodcasts || 0}
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card className="bg-white/10 backdrop-blur-lg border-white/20">
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium text-white">
+                  Total Likes
+                </CardTitle>
+                <Heart className="h-4 w-4 text-pink-400" />
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold text-white">
+                  {stats?.totalLikes || 0}
                 </div>
               </CardContent>
             </Card>
@@ -210,6 +226,26 @@ export default function AdminDashboard() {
                   className="w-full bg-green-600 hover:bg-green-700"
                 >
                   View All Applicants
+                </Button>
+              </CardContent>
+            </Card>
+
+            <Card className="bg-white/10 backdrop-blur-lg border-white/20">
+              <CardHeader>
+                <CardTitle className="text-white flex items-center gap-2">
+                  <Heart className="h-5 w-5" />
+                  Likes Management
+                </CardTitle>
+                <CardDescription className="text-gray-300">
+                  Monitor client-applicant interactions
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <Button
+                  onClick={() => router.push("/admin/likes")}
+                  className="w-full bg-pink-600 hover:bg-pink-700"
+                >
+                  View All Likes
                 </Button>
               </CardContent>
             </Card>

@@ -2,36 +2,37 @@ import { NextRequest, NextResponse } from "next/server";
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000";
 
-export async function GET(request: NextRequest) {
+export async function POST(request: NextRequest) {
   try {
     const authHeader = request.headers.get("authorization");
 
     if (!authHeader) {
       return NextResponse.json(
-        { error: "No authorization header" },
+        { error: "Authorization header required" },
         { status: 401 }
       );
     }
 
-    const response = await fetch(`${API_BASE_URL}/admin/clients`, {
-      method: "GET",
+    const body = await request.json();
+
+    const response = await fetch(`${API_BASE_URL}/likes/create`, {
+      method: "POST",
       headers: {
         Authorization: authHeader,
         "Content-Type": "application/json",
       },
+      body: JSON.stringify(body),
     });
 
     if (!response.ok) {
-      return NextResponse.json(
-        { error: "Failed to fetch clients" },
-        { status: response.status }
-      );
+      const errorData = await response.json();
+      return NextResponse.json(errorData, { status: response.status });
     }
 
     const data = await response.json();
     return NextResponse.json(data);
   } catch (error) {
-    console.error("Error in admin clients API:", error);
+    console.error("Error creating like:", error);
     return NextResponse.json(
       { error: "Internal server error" },
       { status: 500 }

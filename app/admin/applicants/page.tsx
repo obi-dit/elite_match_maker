@@ -32,6 +32,7 @@ interface Applicant {
   isMembershipSubscribed: boolean;
   selectedTier?: string;
   createdAt: string;
+  isApplicantApproved: boolean;
   userSubscription: {
     subscription: {
       tier: string;
@@ -58,7 +59,7 @@ export default function ApplicantManagement() {
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
   const [filterStatus, setFilterStatus] = useState("all");
-
+  const [refresh, setRefresh] = useState(Date.now());
   useEffect(() => {
     if (!isAuthenticated || !isAdmin()) {
       router.push("/login");
@@ -66,7 +67,7 @@ export default function ApplicantManagement() {
     }
 
     fetchApplicants();
-  }, [isAuthenticated, router]);
+  }, [isAuthenticated, router, refresh]);
 
   const fetchApplicants = async () => {
     try {
@@ -118,6 +119,7 @@ export default function ApplicantManagement() {
             : applicant
         )
       );
+      setRefresh(Date.now());
     } catch (error) {
       console.error("Error updating applicant status:", error);
     }
@@ -278,19 +280,17 @@ export default function ApplicantManagement() {
                     <div className="flex gap-2 mb-2">
                       <Badge
                         variant={
-                          applicant.isMembershipSubscribed
+                          applicant.isApplicantApproved
                             ? "default"
                             : "secondary"
                         }
                         className={
-                          applicant.isMembershipSubscribed
+                          applicant.isApplicantApproved
                             ? "bg-green-600"
                             : "bg-yellow-600"
                         }
                       >
-                        {applicant.isMembershipSubscribed
-                          ? "Approved"
-                          : "Pending"}
+                        {applicant.isApplicantApproved ? "Approved" : "Pending"}
                       </Badge>
                       {applicant.selectedTier && (
                         <Badge className={getTierColor(applicant.selectedTier)}>
@@ -404,18 +404,18 @@ export default function ApplicantManagement() {
                       size="sm"
                       variant="outline"
                       className={`${
-                        applicant.isMembershipSubscribed
+                        applicant.isApplicantApproved
                           ? "border-red-500/50 text-red-400 hover:bg-red-500/10"
                           : "border-green-500/50 text-green-400 hover:bg-green-500/10"
                       }`}
                       onClick={() =>
                         handleToggleStatus(
                           applicant.id,
-                          applicant.isMembershipSubscribed
+                          applicant.isApplicantApproved
                         )
                       }
                     >
-                      {applicant.isMembershipSubscribed ? (
+                      {applicant.isApplicantApproved ? (
                         <>
                           <UserX className="h-3 w-3 mr-1" />
                           Reject
