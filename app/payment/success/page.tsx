@@ -21,17 +21,6 @@ import {
 } from "lucide-react";
 import { TransactionResponse, TransactionType } from "@/typings/transaction";
 
-interface PaymentSuccessData {
-  sessionId: string;
-  subscriptionTier: string;
-  amount: number;
-  currency: string;
-  userEmail: string;
-  userName: string;
-  subscriptionId: string;
-  nextBillingDate?: string;
-}
-
 function PaymentSuccessContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
@@ -82,7 +71,6 @@ function PaymentSuccessContent() {
   useEffect(() => {
     // Simulate fetching payment data (in real app, this would come from your backend)
     const sessionId = searchParams.get("session_id");
-    const subscriptionTier = searchParams.get("tier") || "bronze";
     setIsLoading(true);
     if (!sessionId) {
       // If no session ID, redirect to home
@@ -212,7 +200,10 @@ function PaymentSuccessContent() {
                       <span className="text-white">
                         {paymentData &&
                           paymentData.userSubscription &&
-                          paymentData.userSubscription.currentPeriodEnd}
+                          paymentData.userSubscription.currentPeriodEnd &&
+                          new Date(
+                            paymentData.userSubscription.currentPeriodEnd
+                          ).toLocaleDateString()}
                       </span>
                     </div>
                     <div className="flex justify-between items-center py-2">

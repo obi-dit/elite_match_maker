@@ -3,6 +3,7 @@
 import { motion } from "framer-motion";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
+import { Suspense } from "react";
 import {
   XCircle,
   ArrowLeft,
@@ -12,7 +13,7 @@ import {
   HelpCircle,
 } from "lucide-react";
 
-export default function PaymentCancelPage() {
+function PaymentCancelContent() {
   const searchParams = useSearchParams();
   const sessionId = searchParams.get("session_id");
   const reason = searchParams.get("reason") || "Payment was cancelled";
@@ -179,5 +180,24 @@ export default function PaymentCancelPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+function LoadingFallback() {
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 flex items-center justify-center">
+      <div className="text-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-white mx-auto mb-4"></div>
+        <p className="text-white">Loading...</p>
+      </div>
+    </div>
+  );
+}
+
+export default function PaymentCancelPage() {
+  return (
+    <Suspense fallback={<LoadingFallback />}>
+      <PaymentCancelContent />
+    </Suspense>
   );
 }

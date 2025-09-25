@@ -25,6 +25,7 @@ import {
   Play,
   Eye,
 } from "lucide-react";
+import NextImage from "next/image";
 
 interface Applicant {
   id: number;
@@ -204,7 +205,8 @@ export default function ApplicantDetail() {
           <AlertCircle className="h-16 w-16 text-red-400 mx-auto mb-4" />
           <div className="text-white text-xl mb-2">Applicant not found</div>
           <p className="text-gray-300 mb-4">
-            The applicant you're looking for doesn't exist or has been removed.
+            The applicant you&apos;re looking for doesn&apos;t exist or has been
+            removed.
           </p>
           <Button
             onClick={() => router.push("/admin/applicants")}
@@ -238,7 +240,7 @@ export default function ApplicantDetail() {
             </h1>
             <p className="text-gray-300">
               View and manage{" "}
-              {applicant.firstName || applicant.fullName || "applicant"}'s
+              {applicant.firstName || applicant.fullName || "applicant"}&apos;s
               information
             </p>
           </div>
@@ -313,7 +315,7 @@ export default function ApplicantDetail() {
               <Card className="bg-white/10 backdrop-blur-lg border-white/20">
                 <CardHeader>
                   <CardTitle className="text-white flex items-center gap-2">
-                    <Image className="h-5 w-5" />
+                    <Image className="h-5 w-5" aria-hidden="true" />
                     Photos & Media
                   </CardTitle>
                 </CardHeader>
@@ -325,7 +327,7 @@ export default function ApplicantDetail() {
                       applicant.photo3) && (
                       <div>
                         <h4 className="text-white font-medium mb-4 flex items-center gap-2">
-                          <Image className="h-4 w-4" />
+                          <Image className="h-4 w-4" aria-hidden="true" />
                           Photos
                         </h4>
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -341,10 +343,12 @@ export default function ApplicantDetail() {
                                 className="relative group cursor-pointer"
                                 onClick={() => window.open(photo, "_blank")}
                               >
-                                <div className="aspect-square rounded-lg overflow-hidden bg-white/5 border border-white/20">
-                                  <img
-                                    src={photo}
+                                <div className="aspect-square rounded-lg overflow-hidden bg-white/5 border border-white/20 relative">
+                                  <NextImage
+                                    src={photo || "/placeholder-avatar.jpg"}
                                     alt={`Applicant photo ${index + 1}`}
+                                    width={400}
+                                    height={400}
                                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-200"
                                     onError={(e) => {
                                       const target =
@@ -433,18 +437,22 @@ export default function ApplicantDetail() {
               <Card className="bg-white/10 backdrop-blur-lg border-white/20">
                 <CardHeader>
                   <CardTitle className="text-white flex items-center gap-2">
-                    <Image className="h-5 w-5" />
+                    <Image className="h-5 w-5" aria-hidden="true" />
                     Photos & Media
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
                   <div className="text-center py-8">
-                    <Image className="h-12 w-12 text-gray-400 mx-auto mb-4" />
+                    <Image
+                      className="h-12 w-12 text-gray-400 mx-auto mb-4"
+                      aria-hidden="true"
+                    />
                     <p className="text-gray-300 text-lg mb-2">
                       No media uploaded
                     </p>
                     <p className="text-gray-400 text-sm">
-                      This applicant hasn't uploaded any photos or videos yet.
+                      This applicant hasn&apos;t uploaded any photos or videos
+                      yet.
                     </p>
                   </div>
                 </CardContent>
@@ -462,7 +470,7 @@ export default function ApplicantDetail() {
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-4">
-                    {applicant.userSubscription.map((subscription, index) => (
+                    {applicant.userSubscription.map((subscription) => (
                       <div
                         key={subscription.id}
                         className="bg-white/5 p-4 rounded-lg"

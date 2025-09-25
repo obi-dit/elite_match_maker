@@ -18,12 +18,6 @@ export default function ProtectedRoute({
   const { isAuthenticated, user, token } = useAuthStore();
   const router = useRouter();
   const [isChecking, setIsChecking] = useState(true);
-  const publicRoutes = [
-    "/login",
-    "/register",
-    "/forgot-password",
-    "/reset-password",
-  ];
   useEffect(() => {
     // Check if we have a token in localStorage (for initial load)
     const checkAuth = () => {

@@ -3,7 +3,6 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useAuthStore, getAuthHeaders, isAdmin } from "@/store/authStore";
-import { handleAuthError } from "@/utils/auth";
 import {
   Card,
   CardContent,

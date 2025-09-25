@@ -4,7 +4,6 @@ import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAuthStore } from "@/store/authStore";
 import { LogIn, Mail, Lock, Eye, EyeOff } from "lucide-react";
-import { FetchError } from "node-fetch";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
@@ -20,7 +19,7 @@ export default function LoginPage() {
     if (isAuthenticated) {
       router.push("/member-dashboard");
     }
-  }, [isAuthenticated]);
+  }, [isAuthenticated, router]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

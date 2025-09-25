@@ -24,8 +24,6 @@ import {
   User,
   Heart,
   MapPin,
-  Phone,
-  Mail,
   Star,
   Eye,
   ChevronRight,
@@ -86,6 +84,11 @@ interface Applicant {
   updatedAt: string;
 }
 
+interface Like {
+  id: number;
+  applicant: Applicant;
+}
+
 interface DashboardData {
   userSubscription: {
     id: string;
@@ -117,7 +120,7 @@ export default function MemberDashboard() {
   const [selectedApplicant, setSelectedApplicant] = useState<Applicant | null>(
     null
   );
-  const [likedApplicants, setLikedApplicants] = useState<any[]>([]);
+  const [likedApplicants, setLikedApplicants] = useState<Like[]>([]);
   const [likedLoading, setLikedLoading] = useState(false);
   const [likeLoading, setLikeLoading] = useState<number | null>(null);
   const [unlikeLoading, setUnlikeLoading] = useState<number | null>(null);
@@ -483,7 +486,7 @@ export default function MemberDashboard() {
               {applicant.whyGoodWife && (
                 <div>
                   <label className="text-sm font-medium text-gray-500">
-                    Why I'd Make a Good Wife
+                    Why I&apos;d Make a Good Wife
                   </label>
                   <p className="text-lg text-gray-700">
                     {applicant.whyGoodWife}
@@ -1284,8 +1287,8 @@ export default function MemberDashboard() {
                           No liked applicants yet
                         </h3>
                         <p className="text-gray-500 mb-4">
-                          Start browsing applicants and like the ones you're
-                          interested in.
+                          Start browsing applicants and like the ones
+                          you&apos;re interested in.
                         </p>
                         <Button
                           onClick={() => setActiveView("applicants")}

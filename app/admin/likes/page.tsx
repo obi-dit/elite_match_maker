@@ -6,7 +6,6 @@ import { useAuthStore, getAuthHeaders, isAdmin } from "@/store/authStore";
 import { handleAuthError } from "@/utils/auth";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import {
   ArrowLeft,
   Heart,
@@ -16,7 +15,6 @@ import {
   Mail,
   Eye,
   Search,
-  Filter,
 } from "lucide-react";
 import Image from "next/image";
 
