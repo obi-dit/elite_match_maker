@@ -90,6 +90,8 @@ export const hasActiveSubscription = () => {
   return user?.isMembershipSubscribed || false;
 };
 
+
+
 // Helper function to check if user is admin
 export const isAdmin = () => {
   const user = useAuthStore.getState().user;
