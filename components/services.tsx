@@ -55,7 +55,7 @@ const ServicesOverview = () => {
               style={{ transitionDelay: `${i * 100}ms` }}
             >
               <div
-                className="h-48 bg-cover bg-center"
+                className="h-56 bg-cover bg-top"
                 style={{ backgroundImage: `url(${s.image})` }}
               />
               <div className="p-6">
