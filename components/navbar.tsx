@@ -71,8 +71,8 @@ const Navbar = () => {
             >
               <Image
                 src="/logo/logo.jpg"
-                width={isScrolled ? 100 : 120}
-                height={isScrolled ? 32 : 40}
+                width={isScrolled ? 80 : 100}
+                height={isScrolled ? 28 : 36}
                 alt="Elite Match Maker"
                 className="rounded-full transition-all duration-300"
               />

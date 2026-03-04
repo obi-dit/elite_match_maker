@@ -125,17 +125,18 @@ function MembershipRegistrationContent() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
-      {/* Header */}
-      <div className="container mx-auto px-4 py-6">
-        <Link
-          href="/become-member"
-          className="inline-flex items-center text-white hover:text-blue-300 transition-colors mb-6"
-        >
-          <ArrowLeft className="w-5 h-5 mr-2" />
-          Back to Membership Selection
-        </Link>
+      {/* Floating back button - visible, non-obstructive on mobile and desktop */}
+      <Link
+        href="/become-member"
+        className="fixed left-4 top-20 lg:top-24 z-40 flex items-center justify-center w-11 h-11 lg:w-12 lg:h-12 rounded-full bg-white/10 hover:bg-white/20 backdrop-blur-md border border-white/20 text-white shadow-lg hover:shadow-xl transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-white/50 focus:ring-offset-2 focus:ring-offset-transparent"
+        aria-label="Back to membership selection"
+      >
+        <ArrowLeft className="w-5 h-5 lg:w-6 lg:h-6" />
+      </Link>
 
-        <div className="text-center mb-8">
+      {/* Header */}
+      <div className="container mx-auto px-4 py-6 mt-20">
+        <div className="text-center mb-8 pt-2">
           <h1 className="text-4xl font-bold text-white mb-4">
             Complete Your Registration
           </h1>
