@@ -9,7 +9,7 @@ const Hero = () => {
       style={{ backgroundImage: "url(/jpeg/hero.jpg)" }}
     >
       <div className="bg-black/50 absolute inset-0 flex items-center justify-center">
-        <div className="text-center text-white px-6 mt-[-120px]">
+        <div className="absolute right-0 text-center text-white px-6 mt-[-120px]">
           <h1 className="text-5xl font-bold">
             Modern Matchmaking for U.S Men of Color
           </h1>

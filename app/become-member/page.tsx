@@ -188,7 +188,7 @@ export default function BecomeMemberPage() {
                       </div>
 
                       {/* Features */}
-                      <div className="mb-8 h-[69%]">
+                      <div className="mb-8 md:h-[69%]">
                         <ul className="space-y-3">
                           {tier.subscriptionFeatures.map(
                             (feature, featureIndex) => (

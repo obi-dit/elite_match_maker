@@ -70,9 +70,9 @@ const Navbar = () => {
               className="cursor-pointer flex-shrink-0"
             >
               <Image
-                src="/logo/logo.jpg"
-                width={isScrolled ? 80 : 100}
-                height={isScrolled ? 28 : 36}
+                src="/logo/logo_transparent.png"
+                width={isScrolled ? 120 : 140}
+                height={isScrolled ? 36 : 48}
                 alt="Elite Match Maker"
                 className="rounded-full transition-all duration-300"
               />
