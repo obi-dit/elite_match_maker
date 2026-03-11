@@ -14,8 +14,7 @@ const Hero = () => {
             Modern Matchmaking for U.S Men of Color
           </h1>
           <p className="mt-4 text-lg">
-            Connecting high-value U.S. Men with feminine. Family-ready Colombian
-            woman
+          Connecting High-Value U.S. Men with Feminine, Family-Ready Colombian Women
           </p>
           <Link href="#contact">
             <button
